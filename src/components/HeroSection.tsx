@@ -1,4 +1,4 @@
-import { ArrowRight, Cpu, Building2, Heart, Linkedin } from "lucide-react";
+import { ArrowRight, Cpu, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoColibri from "@/assets/logo-colibri.png";
 
@@ -81,26 +81,12 @@ export function HeroSection() {
 
           {/* Visual - Professional Hummingbird Display */}
           <div className="relative flex justify-center lg:justify-end animate-slide-in-right">
-            <div className="relative">
-              {/* Main Logo Container - Clean Professional Design */}
-              <div className="colibri-container relative z-10">
-                <img
-                  src={logoColibri}
-                  alt="SAVA Colibrí Logo"
-                  className="w-48 h-48 sm:w-64 sm:h-64 lg:w-72 lg:h-72 object-contain animate-subtle-float"
-                />
-              </div>
-
-              {/* Subtle Floating Elements - Positioned around not overlapping */}
-              <div className="absolute -top-8 -right-8 p-3 rounded-xl bg-card/90 shadow-xl border border-border/50 animate-fade-in backdrop-blur-sm" style={{ animationDelay: "0.4s" }}>
-                <Heart className="h-6 w-6 text-primary" />
-              </div>
-              <div className="absolute -bottom-8 -left-8 p-3 rounded-xl bg-card/90 shadow-xl border border-border/50 animate-fade-in backdrop-blur-sm" style={{ animationDelay: "0.5s" }}>
-                <Building2 className="h-6 w-6 text-primary" />
-              </div>
-              <div className="absolute top-1/2 -right-12 -translate-y-1/2 p-3 rounded-xl bg-card/90 shadow-xl border border-border/50 animate-fade-in backdrop-blur-sm" style={{ animationDelay: "0.6s" }}>
-                <Cpu className="h-6 w-6 text-primary" />
-              </div>
+            <div className="colibri-container">
+              <img
+                src={logoColibri}
+                alt="SAVA Colibrí Logo"
+                className="w-56 h-56 sm:w-72 sm:h-72 lg:w-80 lg:h-80 object-contain animate-subtle-float"
+              />
             </div>
           </div>
         </div>
