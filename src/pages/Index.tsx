@@ -7,6 +7,7 @@ import { CasesSection } from "@/components/CasesSection";
 import { WhyUsSection } from "@/components/WhyUsSection";
 import { ContactSection } from "@/components/ContactSection";
 import { Footer } from "@/components/Footer";
+import { Chatbot } from "@/components/Chatbot";
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
       <WhyUsSection />
       <ContactSection />
       <Footer />
+      <Chatbot />
     </main>
   );
 };
