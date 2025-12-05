@@ -6,8 +6,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
 
 const COMPANY_LINKEDIN = "https://www.linkedin.com/company/savasoftware/?viewAsMember=true";
+
+// Validation schema
+const contactSchema = z.object({
+  name: z.string().trim().min(1, "El nombre es requerido").max(100, "Máximo 100 caracteres"),
+  email: z.string().trim().email("Email inválido").max(255, "Máximo 255 caracteres"),
+  company: z.string().trim().max(200, "Máximo 200 caracteres").optional(),
+  message: z.string().trim().min(1, "El mensaje es requerido").max(2000, "Máximo 2000 caracteres"),
+});
 
 const contactInfo = [
   {
@@ -51,20 +61,51 @@ export function ContactSection() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      // Validate form data
+      const validatedData = contactSchema.parse(formData);
 
-    setIsSubmitted(true);
-    toast({
-      title: "Mensaje enviado",
-      description: "Nos pondremos en contacto contigo pronto.",
-    });
+      // Submit to Supabase
+      const { error } = await supabase
+        .from("contact_messages")
+        .insert({
+          name: validatedData.name,
+          email: validatedData.email,
+          company: validatedData.company || null,
+          message: validatedData.message,
+        });
 
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: "", email: "", company: "", message: "" });
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      setIsSubmitted(true);
+      toast({
+        title: "Mensaje enviado",
+        description: "Nos pondremos en contacto contigo pronto.",
+      });
+
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setFormData({ name: "", email: "", company: "", message: "" });
+      }, 3000);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Error de validación",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error al enviar",
+          description: "Por favor, intenta nuevamente.",
+          variant: "destructive",
+        });
+      }
+    } finally {
       setIsSubmitting(false);
-    }, 3000);
+    }
   };
 
   return (
@@ -142,6 +183,7 @@ export function ContactSection() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         required
+                        maxLength={100}
                         className="bg-background"
                       />
                     </div>
@@ -154,6 +196,7 @@ export function ContactSection() {
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
+                        maxLength={255}
                         className="bg-background"
                       />
                     </div>
@@ -166,6 +209,7 @@ export function ContactSection() {
                       placeholder="Nombre de tu empresa"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      maxLength={200}
                       className="bg-background"
                     />
                   </div>
@@ -179,6 +223,7 @@ export function ContactSection() {
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       rows={5}
                       required
+                      maxLength={2000}
                       className="bg-background resize-none"
                     />
                   </div>
